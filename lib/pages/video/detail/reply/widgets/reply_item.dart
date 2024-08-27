@@ -298,7 +298,6 @@ class ReplyItem extends StatelessWidget {
             onPressed: () {
               feedBack();
               showModalBottomSheet(
-                isDismissible: false,
                 context: context,
                 isScrollControlled: true,
                 builder: (builder) {
