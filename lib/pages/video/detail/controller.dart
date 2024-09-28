@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:PiliPalaX/http/danmaku.dart';
+import 'package:dlna_dart/dlna.dart';
+import 'package:dlna_dart/xmlParser.dart';
 import 'package:floating/floating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -493,5 +495,103 @@ class VideoDetailController extends GetxController
       }
     }
     return result;
+  }
+
+  void cast(BuildContext context) {
+    if (videoUrl != null && audioUrl != null) {
+      showDialog(
+        context: context,
+        builder: (_) => DlnaPanel(
+          videoUrl: videoUrl!,
+          audioUrl: audioUrl!,
+        ),
+      );
+    } else {
+      SmartDialog.showToast('wait for init');
+    }
+  }
+}
+
+class DlnaPanel extends StatefulWidget {
+  const DlnaPanel({super.key, required this.videoUrl, required this.audioUrl});
+
+  final String videoUrl;
+  final String audioUrl;
+
+  @override
+  State<DlnaPanel> createState() => _DlnaPanelState();
+}
+
+class _DlnaPanelState extends State<DlnaPanel> {
+  final DLNAManager searcher = DLNAManager();
+  late final DeviceManager manager;
+  List<DLNADevice> deviceList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  init() async {
+    manager = await searcher.start();
+    manager.devices.stream.listen((dlist) {
+      setState(() {
+        deviceList = dlist.values.toList();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    searcher.stop();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('查找设备'),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                deviceList.clear();
+              });
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
+      ),
+      content: Container(
+        height: 225,
+        width: context.width,
+        alignment: deviceList.isEmpty ? Alignment.center : null,
+        child: deviceList.isEmpty
+            ? const CircularProgressIndicator()
+            : ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (_, index) => ListTile(
+                  onTap: () async {
+                    try {
+                      await deviceList[index].setUrl(widget.videoUrl);
+                      await deviceList[index].setUrl(
+                        widget.audioUrl,
+                        type: PlayType.Audio,
+                      );
+                      await deviceList[index].play();
+                    } catch (e) {
+                      SmartDialog.showToast(e.toString());
+                    }
+                  },
+                  title: Text(deviceList[index].info.friendlyName),
+                  subtitle: Text(deviceList[index].info.URLBase),
+                ),
+                itemCount: deviceList.length,
+              ),
+      ),
+    );
   }
 }

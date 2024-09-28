@@ -1444,6 +1444,22 @@ class _HeaderControlState extends State<HeaderControl> {
               width: 42,
               height: 34,
               child: IconButton(
+                tooltip: '投屏',
+                style: ButtonStyle(
+                  padding: WidgetStateProperty.all(EdgeInsets.zero),
+                ),
+                onPressed:()=> widget.videoDetailCtr?.cast(context),
+                icon: const Icon(
+                  Icons.cast,
+                  size: 19,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 42,
+              height: 34,
+              child: IconButton(
                 tooltip: '发弹幕',
                 style: ButtonStyle(
                   padding: WidgetStateProperty.all(EdgeInsets.zero),
