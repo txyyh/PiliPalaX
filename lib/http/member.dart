@@ -1,5 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:PiliPalaX/common/constants.dart';
 import 'package:PiliPalaX/http/constants.dart';
 import 'package:PiliPalaX/http/loading_state.dart';
+import 'package:PiliPalaX/models/space/data.dart';
+import 'package:PiliPalaX/models/space/space.dart';
+import 'package:PiliPalaX/utils/login.dart';
+import 'package:PiliPalaX/utils/storage.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData;
@@ -39,11 +47,57 @@ class MemberHttp {
     };
   }
 
+  static Future<LoadingState> space({
+    int? mid,
+  }) async {
+    Map<String, String> data = {
+      'access_key': GStorage.localCache
+              .get(LocalCacheKey.accessKey, defaultValue: {})['value'] ??
+          '',
+      'appkey': Constants.appKey,
+      'build': '1462100',
+      'c_locale': 'zh_CN',
+      'channel': 'yingyongbao',
+      'mobi_app': 'android_hd',
+      'platform': 'android',
+      's_locale': 'zh_CN',
+      'statistics': Constants.statistics,
+      'ts': (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+      'vmid': mid.toString(),
+    };
+    String sign = Utils.appSign(
+      data,
+      Constants.appKey,
+      Constants.appSec,
+    );
+    data['sign'] = sign;
+    int? _mid = GStorage.userInfo.get('userInfoCache')?.mid;
+    dynamic res = await Request().get(
+      Api.space,
+      data: data,
+      options: Options(
+        headers: {
+          'env': 'prod',
+          'app-key': 'android_hd',
+          'x-bili-mid': _mid,
+          'bili-http-engine': 'cronet',
+          'user-agent': Constants.userAgent,
+        },
+      ),
+    );
+    if (res.data['code'] == 0) {
+      return LoadingState.success(Data.fromJson(res.data['data']));
+    } else {
+      return LoadingState.error(res.data['message']);
+    }
+  }
+
   static Future memberInfo({
     int? mid,
     String token = '',
     dynamic wwebid,
   }) async {
+    space(mid: mid);
     Map params = await WbiSign().makSign({
       'mid': mid,
       'token': token,

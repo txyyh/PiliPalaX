@@ -1,0 +1,17 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'season.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Season _$SeasonFromJson(Map<String, dynamic> json) => Season(
+      count: (json['count'] as num?)?.toInt(),
+      item: json['item'] as List<dynamic>?,
+    );
+
+Map<String, dynamic> _$SeasonToJson(Season instance) => <String, dynamic>{
+      'count': instance.count,
+      'item': instance.item,
+    };

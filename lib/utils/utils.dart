@@ -618,7 +618,7 @@ class Utils {
   }
 
   static String appSign(
-      Map<String, dynamic> params, String appkey, String appsec) {
+      Map<String, String> params, String appkey, String appsec) {
     params['appkey'] = appkey;
     var searchParams = Uri(queryParameters: params).query;
     var sortedParams = searchParams.split('&')..sort();

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:PiliPalaX/grpc/app/dynamic/v2/dynamic.pb.dart' as dyn;
+import 'package:PiliPalaX/grpc/grpc_repo.dart';
 import 'package:PiliPalaX/http/member.dart';
 import 'package:PiliPalaX/http/user.dart';
 import 'package:PiliPalaX/models/member/info.dart';
@@ -54,6 +56,16 @@ class _MemberPageState extends State<MemberPage>
         }
       },
     );
+
+    // () async {
+    //   dynamic result = await GrpcRepo.dynSpace(uid: mid, page: 1);
+    //   if (result['status']) {
+    //     dyn.DynSpaceRsp res = result['data'];
+    //     print('111111111111111111111 ${res.list.length}');
+    //     print('111111111111111111111 ${res.list.first.cardType.name}');
+    //     print('111111111111111111111 ${res.list.first.itemType.name}');
+    //   }
+    // }();
   }
 
   @override
