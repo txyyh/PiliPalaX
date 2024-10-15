@@ -28,8 +28,11 @@ class UserInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool darken = GStorage.brightness == Brightness.dark;
-    String? imgUrl =
-        darken ? images.nightImgurl?.http2https : images.imgUrl?.http2https;
+    String? imgUrl = darken
+        ? (images.nightImgurl?.isEmpty == true
+            ? images.imgUrl?.http2https
+            : images.nightImgurl?.http2https)
+        : images.imgUrl?.http2https;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +143,7 @@ class UserInfoCard extends StatelessWidget {
                       (index) => index % 2 == 0
                           ? Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               child: _countWidget(
                                 title: ['粉丝', '关注', '获赞'][index ~/ 2],
                                 count: index == 0

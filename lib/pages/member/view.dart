@@ -56,16 +56,6 @@ class _MemberPageState extends State<MemberPage>
         }
       },
     );
-
-    // () async {
-    //   dynamic result = await GrpcRepo.dynSpace(uid: mid, page: 1);
-    //   if (result['status']) {
-    //     dyn.DynSpaceRsp res = result['data'];
-    //     print('111111111111111111111 ${res.list.length}');
-    //     print('111111111111111111111 ${res.list.first.cardType.name}');
-    //     print('111111111111111111111 ${res.list.first.itemType.name}');
-    //   }
-    // }();
   }
 
   @override

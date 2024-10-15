@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:PiliPalaX/common/constants.dart';
+import 'package:PiliPalaX/grpc/grpc_repo.dart';
 import 'package:PiliPalaX/http/constants.dart';
 import 'package:PiliPalaX/http/loading_state.dart';
 import 'package:PiliPalaX/models/space/data.dart';
@@ -45,6 +46,18 @@ class MemberHttp {
       'status': res.data['status'],
       'msg': res.data['message'] ?? res.data['data'],
     };
+  }
+
+  static Future<LoadingState> spaceDynamic({
+    required int mid,
+    required int page,
+  }) async {
+    dynamic result = await GrpcRepo.dynSpace(uid: mid, page: page);
+    if (result['status']) {
+      return LoadingState.success(result['data']);
+    } else {
+      return LoadingState.error(result['msg']);
+    }
   }
 
   static Future<LoadingState> space({

@@ -1,6 +1,7 @@
 import 'package:PiliPalaX/http/loading_state.dart';
 import 'package:PiliPalaX/http/member.dart';
 import 'package:PiliPalaX/http/video.dart';
+import 'package:PiliPalaX/models/space/tab2.dart';
 import 'package:PiliPalaX/pages/common/common_controller.dart';
 import 'package:PiliPalaX/utils/storage.dart';
 import 'package:flutter/material.dart';
@@ -8,14 +9,18 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
-class MemberControllerNew extends CommonController {
+class MemberControllerNew extends CommonController
+    with GetTickerProviderStateMixin {
   MemberControllerNew({required this.mid});
   int? mid;
   RxDouble scrollRatio = 0.0.obs;
   String? username;
   int? ownerMid;
   RxBool isFollow = false.obs;
-  int relation = 1;
+  RxInt relation = 1.obs;
+  late final TabController tabController;
+  late final List<Tab> tabs;
+  List<Tab2>? tab2;
 
   @override
   void onInit() {
@@ -26,10 +31,35 @@ class MemberControllerNew extends CommonController {
 
   @override
   bool customHandleResponse(Success response) {
-    loadingState.value = response;
     username = response.response?.card?.name ?? '';
     isFollow.value = response.response?.card?.relation?.isFollow == 1;
-    relation = response.response?.relation ?? 1;
+    relation.value = response.response?.relation ?? 1;
+    tab2 = response.response.tab2;
+    if (tab2 != null && tab2!.isNotEmpty) {
+      int initialIndex = tab2!
+          .map((item) => item.param)
+          .toList()
+          .indexOf(response.response.defaultTab);
+      if (initialIndex == 0 &&
+          !response.response.tab.toString().contains('true')) {
+        if (tab2!.length > 1) {
+          initialIndex = 1;
+        }
+        // TODO
+        // tab2!.removeAt(0);
+      }
+      tabs = tab2!.map((item) => Tab(text: item.title ?? '')).toList();
+      tabController = TabController(
+        vsync: this,
+        length: response.response.tab2.length,
+        initialIndex: initialIndex == -1
+            ? tab2!.length > 1
+                ? 1
+                : 0
+            : initialIndex,
+      );
+    }
+    loadingState.value = response;
     return true;
   }
 
@@ -46,7 +76,7 @@ class MemberControllerNew extends CommonController {
       builder: (context) {
         return AlertDialog(
           title: const Text('提示'),
-          content: Text(relation != -1 ? '确定拉黑UP主?' : '从黑名单移除UP主'),
+          content: Text(relation.value != -1 ? '确定拉黑UP主?' : '从黑名单移除UP主'),
           actions: [
             TextButton(
               onPressed: Get.back,
@@ -60,11 +90,11 @@ class MemberControllerNew extends CommonController {
                 Get.back();
                 var res = await VideoHttp.relationMod(
                   mid: mid ?? -1,
-                  act: relation != -1 ? 5 : 6,
+                  act: relation.value != -1 ? 5 : 6,
                   reSrc: 11,
                 );
                 if (res['status']) {
-                  relation = relation != -1 ? -1 : 1;
+                  relation.value = relation.value != -1 ? -1 : 1;
                   isFollow.value = false;
                 }
               },

@@ -186,7 +186,7 @@ class GrpcRepo {
         ..localTime = 8
         ..page = Int64(page)
         ..from = 'space';
-      final response = await GrpcClient.instance.dynamicClient
+      final DynSpaceRsp response = await GrpcClient.instance.dynamicClient
           .dynSpace(request, options: options);
       return {'status': true, 'data': response};
     });

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class MemberHome extends StatefulWidget {
-  const MemberHome({super.key});
+class MemberContribute extends StatefulWidget {
+  const MemberContribute({super.key});
 
   @override
-  State<MemberHome> createState() => _MemberHomeState();
+  State<MemberContribute> createState() => _MemberContributeState();
 }
 
-class _MemberHomeState extends State<MemberHome>
+class _MemberContributeState extends State<MemberContribute>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
