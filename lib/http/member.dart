@@ -63,10 +63,10 @@ class MemberHttp {
   static Future<LoadingState> space({
     int? mid,
   }) async {
+    String? accessKey = GStorage.localCache
+        .get(LocalCacheKey.accessKey, defaultValue: {})['value'];
     Map<String, String> data = {
-      'access_key': GStorage.localCache
-              .get(LocalCacheKey.accessKey, defaultValue: {})['value'] ??
-          '',
+      if (accessKey != null) 'access_key': accessKey,
       'appkey': Constants.appKey,
       'build': '1462100',
       'c_locale': 'zh_CN',

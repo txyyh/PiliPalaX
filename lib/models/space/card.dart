@@ -70,7 +70,7 @@ class Card {
   // Profession? profession;
   // School? school;
   @JsonKey(name: 'space_tag')
-  List<dynamic>? spaceTag;
+  List<Item>? spaceTag;
   @JsonKey(name: 'face_nft_new')
   int? faceNftNew;
   @JsonKey(name: 'has_face_nft')

@@ -74,7 +74,9 @@ Card _$CardFromJson(Map<String, dynamic> json) => Card(
       // school: json['school'] == null
       //     ? null
       //     : School.fromJson(json['school'] as Map<String, dynamic>),
-      spaceTag: json['space_tag'] as List<dynamic>?,
+      spaceTag: (json['space_tag'] as List<dynamic>?)
+          ?.map((item) => Item.fromJson(item))
+          .toList(),
       faceNftNew: (json['face_nft_new'] as num?)?.toInt(),
       hasFaceNft: json['has_face_nft'] as bool?,
       nftCertificate: json['nft_certificate'] == null

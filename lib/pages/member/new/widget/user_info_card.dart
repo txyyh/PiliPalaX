@@ -251,33 +251,33 @@ class UserInfoCard extends StatelessWidget {
                   card.nameplate!.image!,
                   height: 20,
                 ),
-              GestureDetector(
-                onTap: () {
-                  Utils.copyText(card.mid.toString());
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius: const BorderRadius.all(Radius.circular(12)),
-                  ),
-                  child: Text(
-                    'uid: ${card.mid}',
-                    style: TextStyle(
-                      height: 1,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.onSecondaryContainer,
-                    ),
-                    strutStyle: const StrutStyle(
-                      height: 1,
-                      leading: 0,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: () {
+              //     Utils.copyText(card.mid.toString());
+              //   },
+              //   child: Container(
+              //     padding:
+              //         const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
+              //     decoration: BoxDecoration(
+              //       color: Theme.of(context).colorScheme.secondaryContainer,
+              //       borderRadius: const BorderRadius.all(Radius.circular(12)),
+              //     ),
+              //     child: Text(
+              //       'uid: ${card.mid}',
+              //       style: TextStyle(
+              //         height: 1,
+              //         fontSize: 12,
+              //         fontWeight: FontWeight.w500,
+              //         color: Theme.of(context).colorScheme.onSecondaryContainer,
+              //       ),
+              //       strutStyle: const StrutStyle(
+              //         height: 1,
+              //         leading: 0,
+              //         fontSize: 12,
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -329,7 +329,7 @@ class UserInfoCard extends StatelessWidget {
           ),
         if (card.sign?.isNotEmpty == true)
           Padding(
-            padding: const EdgeInsets.only(left: 20, top: 8, right: 20),
+            padding: const EdgeInsets.only(left: 20, top: 6, right: 20),
             child: SelectableText(
               card.sign!.replaceFirst(RegExp('^\n'), ''),
               style: const TextStyle(
@@ -337,6 +337,38 @@ class UserInfoCard extends StatelessWidget {
               ),
             ),
           ),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, top: 6, right: 20),
+          child: Wrap(
+            spacing: 5,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Utils.copyText(card.mid.toString());
+                },
+                child: Text(
+                  'UID: ${card.mid}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                ),
+              ),
+              if (!card.spaceTag.isNullOrEmpty)
+                ...card.spaceTag!.map(
+                  (item) => Text(
+                    item.title ?? '',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
         // if (card.spaceTagBottom != null && card.spaceTagBottom!.isNotEmpty)
         //   Padding(
         //     padding: const EdgeInsets.only(left: 20, top: 8, right: 20),
