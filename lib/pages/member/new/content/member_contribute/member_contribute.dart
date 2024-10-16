@@ -1,21 +1,23 @@
 import 'package:PiliPalaX/pages/member/new/content/member_contribute/content/article/member_article.dart';
 import 'package:PiliPalaX/pages/member/new/content/member_contribute/content/audio/member_audio.dart';
-import 'package:PiliPalaX/pages/member/new/content/member_contribute/content/season/member_season.dart';
-import 'package:PiliPalaX/pages/member/new/content/member_contribute/content/series/member_series.dart';
 import 'package:PiliPalaX/pages/member/new/content/member_contribute/content/video/member_video.dart';
 import 'package:PiliPalaX/pages/member/new/content/member_contribute/member_contribute_ctr.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+enum ContributeType { video, charging, season, series }
 
 class MemberContribute extends StatefulWidget {
   const MemberContribute({
     super.key,
     this.heroTag,
     this.initialIndex,
+    required this.mid,
   });
 
   final String? heroTag;
   final int? initialIndex;
+  final int mid;
 
   @override
   State<MemberContribute> createState() => _MemberContributeState();
@@ -40,7 +42,9 @@ class _MemberContributeState extends State<MemberContribute>
     return _controller.tabs != null
         ? Column(
             children: [
-              ColoredBox(
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(left: 8),
                 color: Theme.of(context).colorScheme.surface,
                 child: Theme(
                   data: ThemeData(
@@ -50,6 +54,7 @@ class _MemberContributeState extends State<MemberContribute>
                   child: TabBar(
                     isScrollable: true,
                     tabs: _controller.tabs!,
+                    tabAlignment: TabAlignment.start,
                     controller: _controller.tabController,
                     dividerHeight: 0,
                     indicatorWeight: 0,
@@ -74,16 +79,29 @@ class _MemberContributeState extends State<MemberContribute>
                   children: _controller.items!
                       .map(
                         (item) => switch (item.param) {
-                          'video' => MemberVideo(heroTag: widget.heroTag),
+                          'video' => MemberVideo(
+                              type: ContributeType.video,
+                              heroTag: widget.heroTag,
+                              mid: widget.mid,
+                            ),
+                          'charging_video' => MemberVideo(
+                              type: ContributeType.charging,
+                              heroTag: widget.heroTag,
+                              mid: widget.mid,
+                            ),
                           'article' => MemberArticle(heroTag: widget.heroTag),
                           'audio' => MemberAudio(heroTag: widget.heroTag),
-                          'season_video' => MemberSeason(
-                              seasonId: item.seasonId ?? -1,
+                          'season_video' => MemberVideo(
+                              type: ContributeType.season,
                               heroTag: widget.heroTag,
+                              mid: widget.mid,
+                              seasonId: item.seasonId,
                             ),
-                          'series' => MemberSeries(
-                              seriesId: item.seriesId ?? -1,
+                          'series' => MemberVideo(
+                              type: ContributeType.series,
                               heroTag: widget.heroTag,
+                              mid: widget.mid,
+                              seriesId: item.seriesId,
                             ),
                           _ => Center(child: Text(item.title!))
                         },
@@ -93,8 +111,10 @@ class _MemberContributeState extends State<MemberContribute>
               ),
             ],
           )
-        : Center(
-            child: Text('视频'),
+        : MemberVideo(
+            type: ContributeType.video,
+            heroTag: widget.heroTag,
+            mid: widget.mid,
           );
   }
 }

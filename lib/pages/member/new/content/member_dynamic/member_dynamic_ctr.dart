@@ -13,7 +13,7 @@ class MemberDynamicCtr extends CommonController {
   @override
   void onInit() {
     super.onInit();
-    queryData();
+    // queryData();
   }
 
   @override

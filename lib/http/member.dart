@@ -1,17 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:PiliPalaX/common/constants.dart';
 import 'package:PiliPalaX/grpc/grpc_repo.dart';
 import 'package:PiliPalaX/http/constants.dart';
 import 'package:PiliPalaX/http/loading_state.dart';
 import 'package:PiliPalaX/models/space/data.dart';
-import 'package:PiliPalaX/models/space/space.dart';
-import 'package:PiliPalaX/utils/login.dart';
+import 'package:PiliPalaX/pages/member/new/content/member_contribute/member_contribute.dart'
+    show ContributeType;
 import 'package:PiliPalaX/utils/storage.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart' hide FormData;
 
 import '../models/dynamics/result.dart';
 import '../models/follow/result.dart';
@@ -20,6 +16,7 @@ import '../models/member/coin.dart';
 import '../models/member/info.dart';
 import '../models/member/seasons.dart';
 import '../models/member/tags.dart';
+import '../models/space_archive/data.dart' as archive;
 import '../utils/utils.dart';
 import '../utils/wbi_sign.dart';
 import 'index.dart';
@@ -57,6 +54,74 @@ class MemberHttp {
       return LoadingState.success(result['data']);
     } else {
       return LoadingState.error(result['msg']);
+    }
+  }
+
+  static Future<LoadingState> spaceArchive({
+    required ContributeType type,
+    required int? mid,
+    required String? aid,
+    required String order,
+    required String sort,
+    int? pn,
+    int? next,
+    int? seasonId,
+    int? seriesId,
+  }) async {
+    String? accessKey = GStorage.localCache
+        .get(LocalCacheKey.accessKey, defaultValue: {})['value'];
+    Map<String, String> data = {
+      if (accessKey != null) 'access_key': accessKey,
+      if (aid != null) 'aid': aid.toString(),
+      'appkey': Constants.appKey,
+      'build': '1462100',
+      'c_locale': 'zh_CN',
+      'channel': 'yingyongbao',
+      'mobi_app': 'android_hd',
+      'platform': 'android',
+      's_locale': 'zh_CN',
+      'ps': '20',
+      if (pn != null) 'pn': pn.toString(),
+      if (next != null) 'next': next.toString(),
+      if (seasonId != null) 'season_id': seasonId.toString(),
+      if (seriesId != null) 'series_id': seriesId.toString(),
+      'qn': type == ContributeType.video ? '80' : '32',
+      'order': order,
+      'sort': sort,
+      'statistics': Constants.statistics,
+      'ts': (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+      'vmid': mid.toString(),
+    };
+    String sign = Utils.appSign(
+      data,
+      Constants.appKey,
+      Constants.appSec,
+    );
+    data['sign'] = sign;
+    int? _mid = GStorage.userInfo.get('userInfoCache')?.mid;
+    dynamic res = await Request().get(
+      type == ContributeType.video
+          ? Api.spaceArchive
+          : type == ContributeType.charging
+              ? Api.spaceChargingArchive
+              : type == ContributeType.season
+                  ? Api.spaceSeason
+                  : Api.spaceSeries,
+      data: data,
+      options: Options(
+        headers: {
+          'env': 'prod',
+          'app-key': 'android_hd',
+          'x-bili-mid': _mid,
+          'bili-http-engine': 'cronet',
+          'user-agent': Constants.userAgent,
+        },
+      ),
+    );
+    if (res.data['code'] == 0) {
+      return LoadingState.success(archive.Data.fromJson(res.data['data']));
+    } else {
+      return LoadingState.error(res.data['message']);
     }
   }
 

@@ -166,7 +166,10 @@ class _MemberHomeState extends State<MemberHome>
                     try {
                       final contributeCtr =
                           Get.find<MemberContributeCtr>(tag: widget.heroTag);
-                      contributeCtr.tabController?.animateTo(index1);
+                      // contributeCtr.tabController?.animateTo(index1);
+                      if (contributeCtr.tabController?.index != index1) {
+                        contributeCtr.tabController?.index = index1;
+                      }
                       print('initialized');
                     } catch (e) {
                       _ctr.contributeInitialIndex.value = index1;

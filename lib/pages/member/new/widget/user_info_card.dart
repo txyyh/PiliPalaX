@@ -148,7 +148,7 @@ class UserInfoCard extends StatelessWidget {
                                 title: ['粉丝', '关注', '获赞'][index ~/ 2],
                                 count: index == 0
                                     ? card.fans
-                                    : index == 3
+                                    : index == 2
                                         ? card.attention
                                         : card.likes?.likeNum ?? 0,
                                 onTap: () {},

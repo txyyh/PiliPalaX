@@ -285,6 +285,18 @@ class Api {
 
   static const String space = '${HttpString.appBaseUrl}/x/v2/space';
 
+  static const String spaceArchive =
+      '${HttpString.appBaseUrl}/x/v2/space/archive/cursor';
+
+  static const String spaceChargingArchive =
+      '${HttpString.appBaseUrl}/x/v2/space/archive/charging';
+
+  static const String spaceSeason =
+      '${HttpString.appBaseUrl}/x/v2/space/season/videos';
+
+  static const String spaceSeries =
+      '${HttpString.appBaseUrl}/x/v2/space/series';
+
   // 用户名片信息
   static const String memberCardInfo = '/x/web-interface/card';
 

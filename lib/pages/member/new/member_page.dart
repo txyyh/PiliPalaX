@@ -217,6 +217,7 @@ class _MemberPageNewState extends State<MemberPageNew>
                                           heroTag: _heroTag,
                                           initialIndex: _userController
                                               .contributeInitialIndex.value,
+                                          mid: _mid ?? -1,
                                         ),
                                       ),
                                     _ => Center(child: Text(item.title ?? '')),
