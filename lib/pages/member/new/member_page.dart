@@ -212,14 +212,16 @@ class _MemberPageNewState extends State<MemberPageNew>
                                   return switch (item.param!) {
                                     'home' => MemberHome(heroTag: _heroTag),
                                     'dynamic' => MemberDynamic(mid: _mid ?? -1),
-                                    'contribute' => MemberContribute(),
+                                    'contribute' => Obx(
+                                        () => MemberContribute(
+                                          heroTag: _heroTag,
+                                          initialIndex: _userController
+                                              .contributeInitialIndex.value,
+                                        ),
+                                      ),
                                     _ => Center(child: Text(item.title ?? '')),
                                   };
                                 }).toList(),
-                                //   MemberHome(heroTag: _heroTag),
-                                //   MemberDynamic(mid: _mid ?? -1),
-                                //   MemberArchive(),
-                                // ],
                               ),
                             );
                           },

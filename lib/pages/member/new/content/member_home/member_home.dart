@@ -4,7 +4,9 @@ import 'package:PiliPalaX/common/constants.dart';
 import 'package:PiliPalaX/common/widgets/video_card_v_member_home.dart';
 import 'package:PiliPalaX/http/loading_state.dart';
 import 'package:PiliPalaX/models/space/data.dart';
+import 'package:PiliPalaX/models/space/item.dart';
 import 'package:PiliPalaX/pages/bangumi/widgets/bangumi_card_v_member_home.dart';
+import 'package:PiliPalaX/pages/member/new/content/member_contribute/member_contribute_ctr.dart';
 import 'package:PiliPalaX/pages/member/new/controller.dart';
 import 'package:PiliPalaX/utils/grid.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +42,7 @@ class _MemberHomeState extends State<MemberHome>
                 _videoHeader(
                   title: '视频',
                   param: 'contribute',
+                  param1: 'video',
                   count: loadingState.response.archive.count,
                 ),
                 SliverPadding(
@@ -65,6 +68,24 @@ class _MemberHomeState extends State<MemberHome>
                     ),
                   ),
                 ),
+              ],
+              if (loadingState.response?.article?.item?.isNotEmpty == true) ...[
+                _videoHeader(
+                  title: '专栏',
+                  param: 'contribute',
+                  param1: 'article',
+                  count: loadingState.response.article.count,
+                ),
+                // TODO
+              ],
+              if (loadingState.response?.audios?.item?.isNotEmpty == true) ...[
+                _videoHeader(
+                  title: '音频',
+                  param: 'contribute',
+                  param1: 'audio',
+                  count: loadingState.response.audios.count,
+                ),
+                // TODO
               ],
               if (loadingState.response?.season?.item?.isNotEmpty == true) ...[
                 _videoHeader(
@@ -109,6 +130,7 @@ class _MemberHomeState extends State<MemberHome>
   Widget _videoHeader({
     required String title,
     required String param,
+    String? param1,
     required int count,
   }) =>
       SliverToBoxAdapter(
@@ -133,10 +155,24 @@ class _MemberHomeState extends State<MemberHome>
               ),
               GestureDetector(
                 onTap: () {
-                  int index = _ctr.tab2!
-                      .map((item) => item.param)
-                      .toList()
-                      .indexOf(param);
+                  int index =
+                      _ctr.tab2!.indexWhere((item) => item.param == param);
+                  if (['video', 'article', 'audio'].contains(param1)) {
+                    List<Item> items = _ctr.tab2!
+                        .firstWhere((item) => item.param == param)
+                        .items!;
+                    int index1 =
+                        items.indexWhere((item) => item.param == param1);
+                    try {
+                      final contributeCtr =
+                          Get.find<MemberContributeCtr>(tag: widget.heroTag);
+                      contributeCtr.tabController?.animateTo(index1);
+                      print('initialized');
+                    } catch (e) {
+                      _ctr.contributeInitialIndex.value = index1;
+                      print('not initialized');
+                    }
+                  }
                   if (index != -1) {
                     _ctr.tabController.animateTo(index);
                   }

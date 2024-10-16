@@ -14,6 +14,10 @@ class Item {
   String? coverIcon;
   String? uri;
   String? param;
+  @JsonKey(name: 'series_id')
+  int? seriesId;
+  @JsonKey(name: 'season_id')
+  int? seasonId;
   String? goto;
   String? length;
   int? duration;
@@ -63,6 +67,8 @@ class Item {
     this.coverIcon,
     this.uri,
     this.param,
+    this.seriesId,
+    this.seasonId,
     this.goto,
     this.length,
     this.duration,

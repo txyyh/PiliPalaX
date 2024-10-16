@@ -21,6 +21,7 @@ class MemberControllerNew extends CommonController
   late final TabController tabController;
   late final List<Tab> tabs;
   List<Tab2>? tab2;
+  RxInt contributeInitialIndex = 0.obs;
 
   @override
   void onInit() {
@@ -37,9 +38,7 @@ class MemberControllerNew extends CommonController
     tab2 = response.response.tab2;
     if (tab2 != null && tab2!.isNotEmpty) {
       int initialIndex = tab2!
-          .map((item) => item.param)
-          .toList()
-          .indexOf(response.response.defaultTab);
+          .indexWhere((item) => item.param == response.response.defaultTab);
       if (initialIndex == 0 &&
           !response.response.tab.toJson().values.contains('true')) {
         if (tab2!.length > 1) {
