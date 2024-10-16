@@ -41,7 +41,7 @@ class MemberControllerNew extends CommonController
           .toList()
           .indexOf(response.response.defaultTab);
       if (initialIndex == 0 &&
-          !response.response.tab.toString().contains('true')) {
+          !response.response.tab.toJson().values.contains('true')) {
         if (tab2!.length > 1) {
           initialIndex = 1;
         }

@@ -1,5 +1,6 @@
 import 'package:PiliPalaX/common/widgets/http_error.dart';
 import 'package:PiliPalaX/http/loading_state.dart';
+import 'package:PiliPalaX/pages/dynamics/widgets/dynamic_panel_grpc.dart';
 import 'package:PiliPalaX/pages/member/new/content/member_dynamic/member_dynamic_ctr.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,9 +42,8 @@ class _MemberDynamicState extends State<MemberDynamic>
                 if (index == loadingState.response.length - 1) {
                   _controller.onLoadMore();
                 }
-                return ListTile(
-                  title:
-                      Text(loadingState.response[index]?.cardType?.name ?? ''),
+                return DynamicPanelGrpc(
+                  item: loadingState.response[index],
                 );
               },
               separatorBuilder: (_, index) => const SizedBox(height: 10),

@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:PiliPalaX/common/constants.dart';
+import 'package:PiliPalaX/common/widgets/video_card_v_member_home.dart';
 import 'package:PiliPalaX/http/loading_state.dart';
 import 'package:PiliPalaX/models/space/data.dart';
+import 'package:PiliPalaX/pages/bangumi/widgets/bangumi_card_v_member_home.dart';
 import 'package:PiliPalaX/pages/member/new/controller.dart';
 import 'package:PiliPalaX/utils/grid.dart';
 import 'package:flutter/material.dart';
@@ -40,23 +42,27 @@ class _MemberHomeState extends State<MemberHome>
                   param: 'contribute',
                   count: loadingState.response.archive.count,
                 ),
-                SliverGrid(
-                  gridDelegate: SliverGridDelegateWithExtentAndRatio(
-                    mainAxisSpacing: StyleString.cardSpace,
-                    crossAxisSpacing: StyleString.cardSpace,
-                    maxCrossAxisExtent: Grid.maxRowWidth,
-                    childAspectRatio: StyleString.aspectRatio,
-                    mainAxisExtent: MediaQuery.textScalerOf(context).scale(90),
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return ListTile(
-                        title: Text(
-                            loadingState.response.archive.item[index].title),
-                      );
-                    },
-                    childCount:
-                        min(4, loadingState.response.archive.item.length),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: StyleString.cardSpace),
+                  sliver: SliverGrid(
+                    gridDelegate: SliverGridDelegateWithExtentAndRatio(
+                      mainAxisSpacing: StyleString.cardSpace,
+                      crossAxisSpacing: StyleString.cardSpace,
+                      maxCrossAxisExtent: Grid.maxRowWidth,
+                      childAspectRatio: StyleString.aspectRatio,
+                      mainAxisExtent:
+                          MediaQuery.textScalerOf(context).scale(90),
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return VideoCardVMemberHome(
+                          videoItem: loadingState.response.archive.item[index],
+                        );
+                      },
+                      childCount:
+                          min(4, loadingState.response.archive.item.length),
+                    ),
                   ),
                 ),
               ],
@@ -66,26 +72,35 @@ class _MemberHomeState extends State<MemberHome>
                   param: 'bangumi',
                   count: loadingState.response.season.count,
                 ),
-                SliverGrid(
-                  gridDelegate: SliverGridDelegateWithExtentAndRatio(
-                    mainAxisSpacing: StyleString.cardSpace - 2,
-                    crossAxisSpacing: StyleString.cardSpace,
-                    maxCrossAxisExtent: Grid.maxRowWidth / 3 * 2,
-                    childAspectRatio: 0.65,
-                    mainAxisExtent: MediaQuery.textScalerOf(context).scale(60),
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return ListTile(
-                        title: Text(
-                            loadingState.response.season.item[index].title),
-                      );
-                    },
-                    childCount:
-                        min(3, loadingState.response.season.item.length),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: StyleString.cardSpace),
+                  sliver: SliverGrid(
+                    gridDelegate: SliverGridDelegateWithExtentAndRatio(
+                      mainAxisSpacing: StyleString.cardSpace - 2,
+                      crossAxisSpacing: StyleString.cardSpace,
+                      maxCrossAxisExtent: Grid.maxRowWidth / 3 * 2,
+                      childAspectRatio: 0.65,
+                      mainAxisExtent:
+                          MediaQuery.textScalerOf(context).scale(60),
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return BangumiCardVMemberHome(
+                          bangumiItem: loadingState.response.season.item[index],
+                        );
+                      },
+                      childCount:
+                          min(3, loadingState.response.season.item.length),
+                    ),
                   ),
                 ),
               ],
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 12 + MediaQuery.of(context).padding.bottom,
+                ),
+              ),
             ],
           )
         : const SizedBox.shrink();

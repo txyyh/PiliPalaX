@@ -6,7 +6,7 @@ part 'season.g.dart';
 @JsonSerializable()
 class Season {
   int? count;
-  List<dynamic>? item;
+  List<Item>? item;
 
   Season({this.count, this.item});
 

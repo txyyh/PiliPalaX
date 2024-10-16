@@ -97,7 +97,7 @@ class UserInfoCard extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      width: 2,
+                      width: 2.5,
                       color: Theme.of(context).colorScheme.surface,
                     ),
                     shape: BoxShape.circle,
@@ -113,10 +113,10 @@ class UserInfoCard extends StatelessWidget {
             ),
             if (card.officialVerify?.icon?.isNotEmpty == true)
               Positioned(
-                top: 168,
-                left: 78,
+                top: 170,
+                left: 80,
                 child: Container(
-                  padding: const EdgeInsets.all(0.1),
+                  padding: const EdgeInsets.all(0.01),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Theme.of(context).colorScheme.surface,
