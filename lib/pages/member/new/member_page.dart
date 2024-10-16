@@ -4,6 +4,7 @@ import 'package:PiliPalaX/common/widgets/dynamic_sliver_appbar.dart';
 import 'package:PiliPalaX/common/widgets/http_error.dart';
 import 'package:PiliPalaX/http/loading_state.dart';
 import 'package:PiliPalaX/pages/member/new/content/member_contribute/content/bangumi/member_bangumi.dart';
+import 'package:PiliPalaX/pages/member/new/content/member_contribute/content/favorite/member_favorite.dart';
 import 'package:PiliPalaX/pages/member/new/content/member_contribute/member_contribute.dart';
 import 'package:PiliPalaX/pages/member/new/content/member_dynamic/member_dynamic.dart';
 import 'package:PiliPalaX/pages/member/new/content/member_home/member_home.dart';
@@ -222,6 +223,10 @@ class _MemberPageNewState extends State<MemberPageNew>
                                         ),
                                       ),
                                     'bangumi' => MemberBangumi(
+                                        heroTag: _heroTag,
+                                        mid: _mid ?? -1,
+                                      ),
+                                    'favorite' => MemberFavorite(
                                         heroTag: _heroTag,
                                         mid: _mid ?? -1,
                                       ),

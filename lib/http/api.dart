@@ -300,6 +300,8 @@ class Api {
   static const String spaceBangumi =
       '${HttpString.appBaseUrl}/x/v2/space/bangumi';
 
+  static const String spaceFav = '/x/v3/fav/folder/space';
+
   // 用户名片信息
   static const String memberCardInfo = '/x/web-interface/card';
 

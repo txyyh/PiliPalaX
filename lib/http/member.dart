@@ -3,6 +3,7 @@ import 'package:PiliPalaX/grpc/grpc_repo.dart';
 import 'package:PiliPalaX/http/constants.dart';
 import 'package:PiliPalaX/http/loading_state.dart';
 import 'package:PiliPalaX/models/space/data.dart';
+import 'package:PiliPalaX/models/space_fav/space_fav.dart';
 import 'package:PiliPalaX/pages/member/new/content/member_contribute/member_contribute.dart'
     show ContributeType;
 import 'package:PiliPalaX/utils/storage.dart';
@@ -54,6 +55,51 @@ class MemberHttp {
       return LoadingState.success(result['data']);
     } else {
       return LoadingState.error(result['msg']);
+    }
+  }
+
+  static Future<LoadingState> spaceFav({
+    required int mid,
+  }) async {
+    String? accessKey = GStorage.localCache
+        .get(LocalCacheKey.accessKey, defaultValue: {})['value'];
+    Map<String, String> data = {
+      if (accessKey != null) 'access_key': accessKey,
+      'appkey': Constants.appKey,
+      'build': '1462100',
+      'c_locale': 'zh_CN',
+      'channel': 'yingyongbao',
+      'mobi_app': 'android_hd',
+      'platform': 'android',
+      's_locale': 'zh_CN',
+      'statistics': Constants.statistics,
+      'ts': (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+      'up_mid': mid.toString(),
+    };
+    String sign = Utils.appSign(
+      data,
+      Constants.appKey,
+      Constants.appSec,
+    );
+    data['sign'] = sign;
+    int? _mid = GStorage.userInfo.get('userInfoCache')?.mid;
+    dynamic res = await Request().get(
+      Api.spaceFav,
+      data: data,
+      options: Options(
+        headers: {
+          'env': 'prod',
+          'app-key': 'android_hd',
+          'x-bili-mid': _mid,
+          'bili-http-engine': 'cronet',
+          'user-agent': Constants.userAgent,
+        },
+      ),
+    );
+    if (res.data['code'] == 0) {
+      return LoadingState.success(SpaceFav.fromJson(res.data).data);
+    } else {
+      return LoadingState.error(res.data['message']);
     }
   }
 
