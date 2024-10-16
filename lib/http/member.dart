@@ -60,9 +60,9 @@ class MemberHttp {
   static Future<LoadingState> spaceArchive({
     required ContributeType type,
     required int? mid,
-    required String? aid,
-    required String order,
-    required String sort,
+    String? aid,
+    String? order,
+    String? sort,
     int? pn,
     int? next,
     int? seasonId,
@@ -86,8 +86,8 @@ class MemberHttp {
       if (seasonId != null) 'season_id': seasonId.toString(),
       if (seriesId != null) 'series_id': seriesId.toString(),
       'qn': type == ContributeType.video ? '80' : '32',
-      'order': order,
-      'sort': sort,
+      if (order != null) 'order': order,
+      if (sort != null) 'sort': sort,
       'statistics': Constants.statistics,
       'ts': (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
       'vmid': mid.toString(),
@@ -106,7 +106,9 @@ class MemberHttp {
               ? Api.spaceChargingArchive
               : type == ContributeType.season
                   ? Api.spaceSeason
-                  : Api.spaceSeries,
+                  : type == ContributeType.series
+                      ? Api.spaceSeries
+                      : Api.spaceBangumi,
       data: data,
       options: Options(
         headers: {

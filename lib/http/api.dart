@@ -297,6 +297,9 @@ class Api {
   static const String spaceSeries =
       '${HttpString.appBaseUrl}/x/v2/space/series';
 
+  static const String spaceBangumi =
+      '${HttpString.appBaseUrl}/x/v2/space/bangumi';
+
   // 用户名片信息
   static const String memberCardInfo = '/x/web-interface/card';
 

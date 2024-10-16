@@ -5,7 +5,7 @@ import 'package:PiliPalaX/pages/member/new/content/member_contribute/member_cont
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-enum ContributeType { video, charging, season, series }
+enum ContributeType { video, charging, season, series, bangumi }
 
 class MemberContribute extends StatefulWidget {
   const MemberContribute({
@@ -44,7 +44,6 @@ class _MemberContributeState extends State<MemberContribute>
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.only(left: 8),
                 color: Theme.of(context).colorScheme.surface,
                 child: Theme(
                   data: ThemeData(
@@ -52,6 +51,7 @@ class _MemberContributeState extends State<MemberContribute>
                     highlightColor: Colors.transparent,
                   ),
                   child: TabBar(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     isScrollable: true,
                     tabs: _controller.tabs!,
                     tabAlignment: TabAlignment.start,

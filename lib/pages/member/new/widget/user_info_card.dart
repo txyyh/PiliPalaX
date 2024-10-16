@@ -151,7 +151,15 @@ class UserInfoCard extends StatelessWidget {
                                     : index == 2
                                         ? card.attention
                                         : card.likes?.likeNum ?? 0,
-                                onTap: () {},
+                                onTap: () {
+                                  if (index == 0) {
+                                    Get.toNamed(
+                                        '/follow?mid=${card.mid}&name=${card.name}');
+                                  } else if (index == 2) {
+                                    Get.toNamed(
+                                        '/fan?mid=${card.mid}&name=${card.name}');
+                                  }
+                                },
                               ),
                             )
                           : SizedBox(
@@ -166,7 +174,19 @@ class UserInfoCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton.outlined(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (GStorage.userInfo.get('userInfoCache') != null) {
+                            Get.toNamed(
+                              '/whisperDetail',
+                              parameters: {
+                                'talkerId': card.mid ?? '',
+                                'name': card.name ?? '',
+                                'face': card.face ?? '',
+                                'mid': card.mid ?? '',
+                              },
+                            );
+                          }
+                        },
                         icon: const Icon(Icons.mail_outline, size: 21),
                         style: IconButton.styleFrom(
                           side: BorderSide(

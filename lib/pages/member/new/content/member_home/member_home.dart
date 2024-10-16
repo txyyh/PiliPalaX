@@ -47,7 +47,8 @@ class _MemberHomeState extends State<MemberHome>
                 ),
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: StyleString.cardSpace),
+                    horizontal: StyleString.safeSpace,
+                  ),
                   sliver: SliverGrid(
                     gridDelegate: SliverGridDelegateWithExtentAndRatio(
                       mainAxisSpacing: StyleString.cardSpace,
@@ -95,7 +96,8 @@ class _MemberHomeState extends State<MemberHome>
                 ),
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: StyleString.cardSpace),
+                    horizontal: StyleString.safeSpace,
+                  ),
                   sliver: SliverGrid(
                     gridDelegate: SliverGridDelegateWithExtentAndRatio(
                       mainAxisSpacing: StyleString.cardSpace - 2,
