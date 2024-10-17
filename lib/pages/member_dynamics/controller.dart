@@ -4,18 +4,13 @@ import 'package:PiliPalaX/http/member.dart';
 import 'package:PiliPalaX/models/dynamics/result.dart';
 
 class MemberDynamicsController extends GetxController {
+  MemberDynamicsController(this.mid);
   final ScrollController scrollController = ScrollController();
-  late int mid;
+  int? mid;
   String offset = '';
   int count = 0;
   bool hasMore = true;
   RxList<DynamicItemModel> dynamicsList = <DynamicItemModel>[].obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    mid = int.parse(Get.parameters['mid']!);
-  }
 
   Future getMemberDynamic(type) async {
     if (type == 'onRefresh') {
