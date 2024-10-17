@@ -23,7 +23,6 @@ class MemberDynamicsPage extends StatefulWidget {
 class _MemberDynamicsPageState extends State<MemberDynamicsPage>
     with AutomaticKeepAliveClientMixin {
   late MemberDynamicsController _memberDynamicController;
-  late Future _futureBuilderFuture;
   late int mid;
   late bool dynamicsWaterfallFlow;
 
@@ -37,8 +36,6 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
     final String heroTag = Utils.makeHeroTag(mid);
     _memberDynamicController =
         Get.put(MemberDynamicsController(widget.mid), tag: heroTag);
-    _futureBuilderFuture =
-        _memberDynamicController.getMemberDynamic('onRefresh');
     // _memberDynamicController.scrollController.addListener(
     //   () {
     //     if (_memberDynamicController.scrollController.position.pixels >=
@@ -83,7 +80,7 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
         // controller: _memberDynamicController.scrollController,
         slivers: [
           FutureBuilder(
-            future: _futureBuilderFuture,
+            future: _memberDynamicController.futureBuilderFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.data != null) {

@@ -30,8 +30,6 @@ class _MemberPageNewState extends State<MemberPageNew>
   String? _heroTag;
   late final MemberControllerNew _userController;
 
-  late double _top;
-
   @override
   void initState() {
     super.initState();
@@ -49,75 +47,76 @@ class _MemberPageNewState extends State<MemberPageNew>
 
   @override
   Widget build(BuildContext context) {
-    _top = MediaQuery.of(context).padding.top;
-    return MediaQuery.removePadding(
-      context: context,
-      removeTop: true,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Obx(
-          () => _userController.loadingState.value is Success
-              ? LayoutBuilder(
-                  builder: (_, constraints) {
-                    if (constraints.maxHeight > constraints.maxWidth) {
-                      return ExtendedNestedScrollView(
-                        controller: _userController.scrollController,
-                        onlyOneScrollInBody: true,
-                        headerSliverBuilder: (context, innerBoxIsScrolled) {
-                          return [
-                            SliverOverlapAbsorber(
-                              handle: ExtendedNestedScrollView
-                                  .sliverOverlapAbsorberHandleFor(context),
-                              sliver: _buildAppBar(),
-                            ),
-                          ];
-                        },
-                        body: _userController.tab2 != null &&
-                                _userController.tab2!.isNotEmpty
-                            ? LayoutBuilder(
-                                builder: (context, _) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                      top: ExtendedNestedScrollView
-                                                  .sliverOverlapAbsorberHandleFor(
-                                                      context)
-                                              .layoutExtent ??
-                                          0,
-                                    ),
-                                    child: _buildBody,
-                                  );
-                                },
-                              )
-                            : Center(child: const Text('EMPTY')),
-                      );
-                    } else {
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: CustomScrollView(
-                              slivers: [
-                                _buildAppBar(false),
-                              ],
-                            ),
+    _userController.top ??= MediaQuery.of(context).padding.top;
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Obx(
+        () => _userController.loadingState.value is Success
+            ? LayoutBuilder(
+                builder: (_, constraints) {
+                  if (constraints.maxHeight > constraints.maxWidth) {
+                    return ExtendedNestedScrollView(
+                      controller: _userController.scrollController,
+                      onlyOneScrollInBody: true,
+                      headerSliverBuilder: (context, innerBoxIsScrolled) {
+                        return [
+                          SliverOverlapAbsorber(
+                            handle: ExtendedNestedScrollView
+                                .sliverOverlapAbsorberHandleFor(context),
+                            sliver: _buildAppBar(),
                           ),
-                          Expanded(
+                        ];
+                      },
+                      body: _userController.tab2 != null &&
+                              _userController.tab2!.isNotEmpty
+                          ? LayoutBuilder(
+                              builder: (context, _) {
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    top: ExtendedNestedScrollView
+                                                .sliverOverlapAbsorberHandleFor(
+                                                    context)
+                                            .layoutExtent ??
+                                        0,
+                                  ),
+                                  child: _buildBody,
+                                );
+                              },
+                            )
+                          : Center(child: const Text('EMPTY')),
+                    );
+                  } else {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: CustomScrollView(
+                            slivers: [
+                              _buildAppBar(false),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: SafeArea(
+                            top: false,
+                            left: false,
+                            bottom: false,
                             child: Column(
                               children: [
-                                SizedBox(height: _top),
+                                SizedBox(height: _userController.top),
                                 _buildTab,
                                 Expanded(child: _buildBody),
                               ],
                             ),
                           ),
-                        ],
-                      );
-                    }
-                  },
-                )
-              : Center(
-                  child: _buildUserInfo(_userController.loadingState.value),
-                ),
-        ),
+                        ),
+                      ],
+                    );
+                  }
+                },
+              )
+            : Center(
+                child: _buildUserInfo(_userController.loadingState.value),
+              ),
       ),
     );
   }
@@ -154,116 +153,121 @@ class _MemberPageNewState extends State<MemberPageNew>
         }).toList(),
       );
 
-  Widget _buildAppBar([bool needTab = true]) => DynamicSliverAppBar(
-        leading: Padding(
-          padding: EdgeInsets.only(top: _top),
-          child: const BackButton(),
+  Widget _buildAppBar([bool needTab = true]) => MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        removeRight: true,
+        child: DynamicSliverAppBar(
+          leading: Padding(
+            padding: EdgeInsets.only(top: _userController.top ?? 0),
+            child: const BackButton(),
+          ),
+          title: Obx(() => _userController.scrollRatio.value == 1 &&
+                  _userController.username != null
+              ? Padding(
+                  padding: EdgeInsets.only(top: _userController.top ?? 0),
+                  child: Text(_userController.username!),
+                )
+              : const SizedBox.shrink()),
+          pinned: true,
+          scrolledUnderElevation: 0,
+          flexibleSpace: _buildUserInfo(_userController.loadingState.value),
+          bottom: needTab &&
+                  _userController.tab2 != null &&
+                  _userController.tab2!.isNotEmpty
+              ? PreferredSize(
+                  preferredSize: Size.fromHeight(48),
+                  child: Material(
+                    child: _buildTab,
+                  ),
+                )
+              : null,
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(top: _userController.top ?? 0),
+              child: IconButton(
+                tooltip: '搜索',
+                onPressed: () => Get.toNamed(
+                    '/memberSearch?mid=$_mid&uname=${_userController.username}'),
+                icon: const Icon(Icons.search_outlined),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: _userController.top ?? 0),
+              child: PopupMenuButton(
+                icon: const Icon(Icons.more_vert),
+                itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                  if (_userController.ownerMid != _mid) ...[
+                    PopupMenuItem(
+                      onTap: () => _userController.blockUser(context),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.block, size: 19),
+                          const SizedBox(width: 10),
+                          Text(_userController.relation.value != -1
+                              ? '加入黑名单'
+                              : '移除黑名单'),
+                        ],
+                      ),
+                    )
+                  ],
+                  PopupMenuItem(
+                    onTap: () => _userController.shareUser(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.share_outlined, size: 19),
+                        const SizedBox(width: 10),
+                        Text(_userController.ownerMid != _mid
+                            ? '分享UP主'
+                            : '分享我的主页'),
+                      ],
+                    ),
+                  ),
+                  if (_userController.ownerMid != null) ...[
+                    const PopupMenuDivider(),
+                    PopupMenuItem(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            clipBehavior: Clip.hardEdge,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 16,
+                            ),
+                            content: ReportPanel(
+                              name: _userController.username,
+                              mid: _mid,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 19,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            '举报',
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.error),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 4),
+          ],
         ),
-        title: Obx(() => _userController.scrollRatio.value == 1 &&
-                _userController.username != null
-            ? Padding(
-                padding: EdgeInsets.only(top: _top),
-                child: Text(_userController.username!),
-              )
-            : const SizedBox.shrink()),
-        pinned: true,
-        scrolledUnderElevation: 0,
-        flexibleSpace: _buildUserInfo(_userController.loadingState.value),
-        bottom: needTab &&
-                _userController.tab2 != null &&
-                _userController.tab2!.isNotEmpty
-            ? PreferredSize(
-                preferredSize: Size.fromHeight(48),
-                child: Material(
-                  child: _buildTab,
-                ),
-              )
-            : null,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(top: _top),
-            child: IconButton(
-              tooltip: '搜索',
-              onPressed: () => Get.toNamed(
-                  '/memberSearch?mid=$_mid&uname=${_userController.username}'),
-              icon: const Icon(Icons.search_outlined),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: _top),
-            child: PopupMenuButton(
-              icon: const Icon(Icons.more_vert),
-              itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                if (_userController.ownerMid != _mid) ...[
-                  PopupMenuItem(
-                    onTap: () => _userController.blockUser(context),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.block, size: 19),
-                        const SizedBox(width: 10),
-                        Text(_userController.relation.value != -1
-                            ? '加入黑名单'
-                            : '移除黑名单'),
-                      ],
-                    ),
-                  )
-                ],
-                PopupMenuItem(
-                  onTap: () => _userController.shareUser(),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.share_outlined, size: 19),
-                      const SizedBox(width: 10),
-                      Text(_userController.ownerMid != _mid
-                          ? '分享UP主'
-                          : '分享我的主页'),
-                    ],
-                  ),
-                ),
-                if (_userController.ownerMid != null) ...[
-                  const PopupMenuDivider(),
-                  PopupMenuItem(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          clipBehavior: Clip.hardEdge,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 16,
-                          ),
-                          content: ReportPanel(
-                            name: _userController.username,
-                            mid: _mid,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 19,
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          '举报',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.error),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(width: 4),
-        ],
       );
 
   Widget _errorWidget(msg) {
@@ -271,11 +275,12 @@ class _MemberPageNewState extends State<MemberPageNew>
       shrinkWrap: true,
       slivers: [
         HttpError(
-            errMsg: msg,
-            fn: () {
-              _userController.loadingState.value = LoadingState.loading();
-              _userController.onRefresh();
-            })
+          errMsg: msg,
+          fn: () {
+            _userController.loadingState.value = LoadingState.loading();
+            _userController.onRefresh();
+          },
+        )
       ],
     );
   }

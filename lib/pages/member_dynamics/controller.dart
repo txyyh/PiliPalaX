@@ -12,6 +12,15 @@ class MemberDynamicsController extends GetxController {
   bool hasMore = true;
   RxList<DynamicItemModel> dynamicsList = <DynamicItemModel>[].obs;
 
+  // TODO: refactor
+  late Future futureBuilderFuture;
+
+  @override
+  void onInit() async {
+    super.onInit();
+    futureBuilderFuture = getMemberDynamic('onRefresh');
+  }
+
   Future getMemberDynamic(type) async {
     if (type == 'onRefresh') {
       offset = '';

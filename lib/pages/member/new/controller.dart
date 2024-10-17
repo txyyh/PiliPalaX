@@ -22,6 +22,7 @@ class MemberControllerNew extends CommonController
   late final List<Tab> tabs;
   List<Tab2>? tab2;
   RxInt contributeInitialIndex = 0.obs;
+  double? top;
 
   @override
   void onInit() {
